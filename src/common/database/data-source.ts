@@ -3,19 +3,18 @@ import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import { IConfig } from '@lib/config/config.interface';
 
 config();
 
-const configService = new ConfigService<IConfig, true>();
+const configService = new ConfigService();
 
 export const connectionOptions = {
   type: 'postgres',
-  host: configService.get('database.host', { infer: true }),
-  port: configService.get('database.port', { infer: true }),
-  username: configService.get('database.user', { infer: true }),
-  password: configService.get('database.password', { infer: true }),
-  database: configService.get('database.dbName', { infer: true }),
+  host: configService.get('DB_HOST'),
+  port: configService.get('DB_PORT'),
+  username: configService.get('DB_USERNAME'),
+  password: configService.get('DB_PASSWORD'),
+  database: configService.get('DB_DATABASE'),
   synchronize: false,
   dropSchema: false,
   migrationsRun: false,
