@@ -20,7 +20,7 @@ async function bootstrap() {
   // security
   // ======================================================
 
-  app.use(compression);
+  app.use(compression());
   app.enable('trust proxy');
   app.set('etag', 'strong');
   app.use(bodyParser.json({ limit: '10mb' }));
