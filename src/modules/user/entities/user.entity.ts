@@ -1,5 +1,6 @@
 import { BaseEntity } from "@common/database";
 import { HelperService } from "@common/helpers/helpers.utils";
+import { Roles } from "@common/types";
 import { Exclude } from "class-transformer";
 import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 
@@ -17,6 +18,13 @@ export class User extends BaseEntity {
 	@Exclude()
 	@Column()
 	password: string;
+
+	@Column({
+		type: "enum",
+		enum: Roles,
+		default: Roles.EMPLOYEE,
+	})
+	role: Roles;
 
 	@BeforeInsert()
 	@BeforeUpdate()

@@ -5,5 +5,5 @@ export interface IJwtPayload {
 	exp: number;
 	aud: string;
 	iss: string;
-	roles?: string[];
+	role?: string;
 }

@@ -12,6 +12,6 @@ export class TokenService {
 		const options: JwtSignOptions = {
 			subject: String(user.id),
 		};
-		return await this.jwt.signAsync({ ...pick(user, ["mobileNumber"]) }, options);
+		return await this.jwt.signAsync({ ...pick(user, ["role"]) }, options);
 	}
 }
