@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		configService: ConfigService<IConfig, true>,
 	) {
 		super({
-			jsonWebTokenOptions: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			secretOrKey: configService.get("jwt.secret", { infer: true }),
 			ignoreExpiration: true,
 		});

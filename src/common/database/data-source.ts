@@ -15,7 +15,7 @@ export const connectionOptions = {
   username: configService.get('DB_USERNAME'),
   password: configService.get('DB_PASSWORD'),
   database: configService.get('DB_DATABASE'),
-  synchronize: false,
+  synchronize: true,
   dropSchema: false,
   migrationsRun: false,
   logging: true,
