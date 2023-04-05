@@ -6,6 +6,8 @@ import {
 	appConfigValidationSchema,
 	database,
 	databaseConfigValidationSchema,
+	facebookOauth,
+	googleOauth,
 	jwt,
 	jwtConfigValidationSchema,
 } from "./configs";
@@ -13,7 +15,13 @@ import {
 @Module({
 	imports: [
 		ConfigModule.forRoot({
-			load: [app, database, jwt],
+			load: [
+				app,
+				database,
+				jwt,
+				googleOauth,
+				facebookOauth,
+			],
 			cache: true,
 			isGlobal: true,
 			expandVariables: true,
@@ -31,4 +39,4 @@ import {
 	providers: [ConfigService],
 	exports: [ConfigService],
 })
-export class NestConfigModule {}
+export class NestConfigModule { }

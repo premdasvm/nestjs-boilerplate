@@ -9,10 +9,10 @@ export class User extends BaseEntity {
 	@Column()
 	name: string;
 
-	@Column({ unique: true })
-	mobileNumber: string;
+	@Column({ unique: true, nullable: true })
+	mobileNumber?: string;
 
-	@Column({ nullable: true })
+	@Column({ unique: true, nullable: true })
 	email?: string;
 
 	@Exclude()

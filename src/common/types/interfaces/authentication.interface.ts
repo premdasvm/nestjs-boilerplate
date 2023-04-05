@@ -7,3 +7,10 @@ export interface IJwtPayload {
 	iss: string;
 	role?: string;
 }
+
+export interface IOauthResponse {
+	email: string;
+	firstName: string;
+	lastName: string;
+	accessToken: string;
+}

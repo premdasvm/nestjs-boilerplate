@@ -1,12 +1,12 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class UserLoginDto {
+export class UserLoginEmailDto {
   /**
    * Email of user
    * @example 1234567890
    */
   @IsNotEmpty()
-  mobileNumber!: string;
+  email!: string;
 
   /**
    * Password of user
