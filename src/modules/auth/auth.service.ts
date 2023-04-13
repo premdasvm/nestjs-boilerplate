@@ -1,66 +1,77 @@
 import { HelperService } from "@common/helpers/helpers.utils";
 import { TokenService } from "@modules/token/token.service";
-import { User } from "@modules/user/entities/user.entity";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+
 import { InjectRepository } from "@nestjs/typeorm";
-import { isEmpty, omit } from "helper-fns";
 import { Repository } from "typeorm";
-import { UserLoginMobileNoDto } from "./dtos/user-login-mobileNo.dto";
-import { LoginType } from "@common/types/enums/misc.enum";
-import { UserService } from "@modules/user/user.service";
-import { CreateUserDto } from "@modules/user/dtos/create-user.dto";
+
+import { isEmpty } from "helper-fns";
+
+import { User } from "@modules/user/entities/user.entity";
+
+import { UserMobileNumberLoginDto } from "./dtos/user-login-mobile-number.dto";
+import { UserLoginEmailDto } from "./dtos/user-login-email.dto";
+import { AuthMethod } from "@common/types";
 
 @Injectable()
 export class AuthService {
 	constructor(
 		@InjectRepository(User) private readonly userRepo: Repository<User>,
 		private readonly tokenService: TokenService,
-		private readonly userService: UserService
-	) { }
+	) {}
 
-	async login({ mobileNumber, password }: UserLoginMobileNoDto) {
-		const user = await this.validateUser(mobileNumber, password);
+	async loginWithMobile({ mobileNumber, password }: UserMobileNumberLoginDto) {
+		const user = await this.findByMobileNumber(mobileNumber);
 
-		if (isEmpty(user)) {
-			throw new HttpException("Invalid Credentials", HttpStatus.FORBIDDEN);
+		await this.validateUser(user, password);
+
+		return await this.tokenService.generateAccessToken(user);
+	}
+
+	async loginWithEmail({ email, password }: UserLoginEmailDto, isPasswordLogin: boolean) {
+		const user = await this.findByEmail(email);
+
+		if (!isPasswordLogin && user.authMethod !== AuthMethod.SOCIAL_LOGIN) {
+			throw new HttpException(
+				"Please user email and password for login",
+				HttpStatus.FORBIDDEN,
+			);
+		}
+
+		if (isPasswordLogin) {
+			await this.validateUser(user, password);
 		}
 
 		return await this.tokenService.generateAccessToken(user);
 	}
 
-	async validateUser(mobileNumber: string, pass: string) {
+	async validateUser(user: User, password: string) {
+		const isPasswordValid = await HelperService.verifyHash(user.password, password);
+
+		if (!isPasswordValid) {
+			throw new HttpException("Credential didn't match!", HttpStatus.FORBIDDEN);
+		}
+
+		return isPasswordValid;
+	}
+
+	private async findByMobileNumber(mobileNumber: string) {
 		const user = await this.userRepo.findOne({ where: { mobileNumber } });
 
 		if (isEmpty(user)) {
-			throw new HttpException("User not found", HttpStatus.FORBIDDEN);
+			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 		}
 
-		const isPasswordValid = HelperService.verifyHash(user.password, pass);
+		return user;
+	}
 
-		if (!isPasswordValid) {
-			throw new HttpException("Credential didn't match!", HttpStatus.BAD_REQUEST);
+	private async findByEmail(email: string) {
+		const user = await this.userRepo.findOne({ where: { email } });
+
+		if (isEmpty(user)) {
+			throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 		}
 
-		return omit(user, ["password"]);
+		return user;
 	}
-
-	async googleLogin(user, loginType: LoginType) {
-		console.log(loginType);
-		const userFound = await this.validateGoogleUser(user);
-		return await this.tokenService.generateAccessToken(userFound);
-	}
-
-	async validateGoogleUser(user) {
-		const userFound = await this.userRepo.findOne({ where: { email: user.email } });
-
-		if (isEmpty(userFound)) {
-			let dto: CreateUserDto = { name: user.firstName + ' ' + user.lastName, email: user.email, password: '' }
-			const userRegistered = await this.userService.create(dto);
-
-			return omit(userRegistered, ["password"]);
-		} else {
-			return omit(userFound, ["password"]);
-		}
-	}
-
 }

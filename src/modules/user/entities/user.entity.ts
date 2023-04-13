@@ -1,6 +1,6 @@
 import { BaseEntity } from "@common/database";
 import { HelperService } from "@common/helpers/helpers.utils";
-import { Roles } from "@common/types";
+import { AuthMethod, Roles } from "@common/types";
 import { Exclude } from "class-transformer";
 import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 
@@ -25,6 +25,13 @@ export class User extends BaseEntity {
 		default: Roles.EMPLOYEE,
 	})
 	role: Roles;
+
+	@Column({
+		type: "enum",
+		enum: AuthMethod,
+		default: AuthMethod.EMAIL_PASSWORD,
+	})
+	authMethod: AuthMethod;
 
 	@BeforeInsert()
 	@BeforeUpdate()
