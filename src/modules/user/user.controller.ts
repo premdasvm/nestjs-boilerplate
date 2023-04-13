@@ -4,12 +4,13 @@ import { UserService } from "./user.service";
 
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
-import { GenericController } from "@common/decorators";
+import { GenericController, Public } from "@common/decorators";
 
 @GenericController("users")
 export class UserController {
-	constructor(private readonly userService: UserService) {}
+	constructor(private readonly userService: UserService) { }
 
+	@Public()
 	@Post("register")
 	create(@Body() dto: CreateUserDto) {
 		return this.userService.create(dto);

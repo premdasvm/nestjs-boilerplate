@@ -13,10 +13,10 @@ export class CreateUserDto {
 	 * Mobile Number of user
 	 * @example 1234567890
 	 */
-	@IsNotEmpty()
+	@IsOptional()
 	@MinLength(10)
 	@MaxLength(10)
-	mobileNumber: string;
+	mobileNumber?: string;
 
 	/**
 	 * Email of user
@@ -35,6 +35,7 @@ export class CreateUserDto {
 	 * Role of user
 	 * @example "EMPLOYEE"
 	 */
+	@IsOptional()
 	@IsEnum(Roles)
-	role: Roles;
+	role?: Roles;
 }
