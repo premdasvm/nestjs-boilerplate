@@ -39,7 +39,7 @@
     "class-validator": "^0.14.0",
     "compression": "^1.7.4",
     "dotenv": "^16.0.3",
-    "helmet": "^6.0.1",
+    "helmet": "^7.0.0",
     "helper-fns": "^2.5.28",
     "joi": "^17.8.3",
     "jsonwebtoken": "^9.0.0",
